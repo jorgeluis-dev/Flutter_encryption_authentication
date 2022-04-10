@@ -38,6 +38,13 @@ class _RandomWordsState extends State<RandomWords> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Startup Name Generator'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.list),
+            onPressed: _pushSaved,
+            tooltip: 'Saved Suggestions',
+          ),
+        ],
       ),
       // #docregion itemBuilder
       body: ListView.builder(
@@ -60,7 +67,7 @@ class _RandomWordsState extends State<RandomWords> {
             ),
             trailing: Icon(
               alreadySaved ? Icons.favorite : Icons.favorite_border,
-              color: alreadySaved ? Colors.red : null,
+              color: alreadySaved ? Colors.greenAccent : null,
               semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',
             ),
             onTap: () {
@@ -80,6 +87,39 @@ class _RandomWordsState extends State<RandomWords> {
     );
   }
   // #enddocregion RWS-build
+
+  void _pushSaved() {
+    Navigator.of(context).push(
+      // Add lines from here...
+      MaterialPageRoute<void>(
+        builder: (context) {
+          final tiles = _saved.map(
+            (pair) {
+              return ListTile(
+                title: Text(
+                  pair.asPascalCase,
+                  style: _biggerFont,
+                ),
+              );
+            },
+          );
+          final divided = tiles.isNotEmpty
+              ? ListTile.divideTiles(
+                  context: context,
+                  tiles: tiles,
+                ).toList()
+              : <Widget>[];
+
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Saved Suggestions'),
+            ),
+            body: ListView(children: divided),
+          );
+        },
+      ), // ...to here.
+    );
+  }
   // #docregion RWS-var
 }
 // #enddocregion RWS-var
